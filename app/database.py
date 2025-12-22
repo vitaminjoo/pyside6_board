@@ -1,6 +1,9 @@
 import sqlite3
 import os
 
+from app.models.post_model import Post
+
+
 class DatabaseManager:
     """
     데이터베이스 연결 및 초기화를 담당하는 클래스
@@ -10,7 +13,7 @@ class DatabaseManager:
         # 현재 실행중인 파일의 위치를 기준으로 DB 경로 설정
         base_dir = os.path.dirname(os.path.abspath(__file__))
 
-        # 프로젝트 최상위 폴더에 DB 파일을 두기 위한 경로 계싼
+        # 프로젝트 최상위 폴더에 DB 파일을 두기 위한 경로 계산
         project_root = os.path.dirname(base_dir)
         self.db_path = os.path.join(project_root, db_file)
 
@@ -27,19 +30,9 @@ class DatabaseManager:
 
     def init_db(self):
         conn = self.get_connection()
-        cur = conn.cursor()
 
-        cur.execute('''
-        CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            author TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
-            ''')
+        Post.create_table(conn)
 
-        conn.commit()
         conn.close()
         print(f"DB 초기화 완료: {self.db_path}")
 

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from app.database import db
 
 class PostDao:
@@ -45,8 +43,8 @@ class PostDao:
         conn = db.get_connection()
         cursor = conn.cursor()
 
-        sql = "UPDATE posts SET title=?, content=?, updated_at = ? WHERE id = ?"
-        cursor.execute(sql, (title, content, datetime.now(), id))
+        sql = "UPDATE posts SET title=?, content=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+        cursor.execute(sql, (title, content, id))
         conn.commit()
         conn.close()
         print(f"수정 완료: ID: {id}")
