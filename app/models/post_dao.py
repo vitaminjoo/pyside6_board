@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app.database import db
 
 class PostDao:
@@ -39,12 +41,12 @@ class PostDao:
         conn.close()
         return row
 
-    def update_post(self, id, title, content, author="anonymous"):
+    def update_post(self, id, title, content):
         conn = db.get_connection()
         cursor = conn.cursor()
 
-        sql = "UPDATE posts SET title=?, content=? WHERE id = ?"
-        cursor.execute(sql, (title, content, id))
+        sql = "UPDATE posts SET title=?, content=?, updated_at = ? WHERE id = ?"
+        cursor.execute(sql, (title, content, datetime.now(), id))
         conn.commit()
         conn.close()
         print(f"수정 완료: ID: {id}")
