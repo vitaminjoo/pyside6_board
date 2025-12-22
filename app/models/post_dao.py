@@ -1,4 +1,6 @@
 from app.database import db
+from app.models.post_model import Post
+
 
 class PostDao:
     """
@@ -23,11 +25,20 @@ class PostDao:
 
         sql = "SELECT * FROM posts ORDER BY created_at DESC"
         cursor.execute(sql)
-
         rows = cursor.fetchall()
-
         conn.close()
-        return rows
+
+        posts_obj = []
+        for row in rows:
+            post = Post(id=row['id'],
+            title=row['title'],
+            content=row['content'],
+            author=row['author'],
+            created_at=row['created_at'],
+            updated_at=row['updated_at']
+            )
+            posts_obj.append(post)
+        return posts_obj
 
     def get_post(self, id):
         conn = db.get_connection()
