@@ -2,8 +2,8 @@ from typing import Optional
 
 from PySide6.QtCore import QObject, Signal
 
-from app.models import Post
 from app.database import PostDao
+from app.models import Post
 
 
 class PostViewModel(QObject):
@@ -30,7 +30,9 @@ class PostViewModel(QObject):
 
     def add_post(self, title: str, content: str, author: str = None) -> bool:
         try:
-            self.post_dao.insert_post(title, content, author)
+            author = author if author else "anonymous"
+            post = Post(title=title, content=content, author=author)
+            self.post_dao.insert_post(post)
             self.message_signal.emit("Post Added.")
             self.fetch_posts()
             return True
@@ -40,7 +42,9 @@ class PostViewModel(QObject):
 
     def update_post(self, id: int, title: str, content: str, author: str = None) -> bool:
         try:
-            self.post_dao.update_post(id, title, content, author)
+            author = author if author else "anonymous"
+            updated_post = Post(id=id, title=title, content=content, author=author)
+            self.post_dao.update_post(updated_post)
             self.message_signal.emit("Post Updated.")
             self.fetch_posts()
             return True
@@ -57,7 +61,7 @@ class PostViewModel(QObject):
             self.error_message_signal.emit(e)
             return False
 
-    def delete_posts(self, ids : list[int]) -> bool:
+    def delete_posts(self, ids: list[int]) -> bool:
         try:
             self.post_dao.delete_posts(ids)
             self.fetch_posts()

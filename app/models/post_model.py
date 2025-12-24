@@ -3,12 +3,12 @@ from dataclasses import dataclass
 
 @dataclass
 class Post:
-    id: int
     title: str
     content: str
-    author: str
-    created_at: str
-    updated_at: str
+    author: str = "anonymous"
+    id: int = None
+    created_at: str = None
+    updated_at: str = None
 
     @staticmethod
     def create_table(conn):

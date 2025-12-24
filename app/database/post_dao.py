@@ -10,13 +10,11 @@ class PostDao:
     SQL 쿼리는 이 파일 안에만 존재해야 합니다.
     """
 
-    def insert_post(self, title: str, content: str, author: str) -> None:
-        if not author:
-            author = "anonymous"
-
+    def insert_post(self, post: Post) -> None:
+        new_post = post
         with db.get_cursor() as cursor:
             sql = "INSERT INTO posts (title, content, author) VALUES (?, ?, ?)"
-            cursor.execute(sql, (title, content, author))
+            cursor.execute(sql, (new_post.title, new_post.content, new_post.author))
 
     def get_all_posts(self) -> list[Post]:
         with db.get_cursor() as cursor:
@@ -56,13 +54,11 @@ class PostDao:
         else:
             return None
 
-    def update_post(self, id: int, title: str, content: str, author: str) -> None:
-        if not author:
-            author = "anonymous"
-
+    def update_post(self, updated_post: Post) -> None:
+        post = updated_post
         with db.get_cursor() as cursor:
             sql = "UPDATE posts SET title=?, content =?, author=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-            cursor.execute(sql, (title, content, author, id))
+            cursor.execute(sql, (post.title, post.content, post.author, post.id))
 
     def delete_post(self, id: int) -> None:
         with db.get_cursor() as cursor:
