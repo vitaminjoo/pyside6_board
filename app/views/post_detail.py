@@ -19,22 +19,25 @@ class PostDetailPage(QWidget):
         # TODO: UX 고려해서 재배치 필요
         layout = QVBoxLayout()
 
-        self.lable_title = QLabel("제목")
+        btn_to_list_layout = QHBoxLayout()
+        self.btn_go_list = QPushButton("List")
+        btn_to_list_layout.addWidget(self.btn_go_list)
+        layout.addLayout(btn_to_list_layout)
+
+        self.lable_title = QLabel("Subject")
         self.lable_title.setWordWrap(True)
         layout.addWidget(self.lable_title)
 
-        self.label_info = QLabel("작성자 | 작성일")
+        self.label_info = QLabel("Author | Date")
         layout.addWidget(self.label_info)
 
         self.text_content = QTextBrowser()
         layout.addWidget(self.text_content)
 
         btn_layout = QHBoxLayout()
-        self.btn_go_list = QPushButton("List")
         self.btn_edit = QPushButton("Edit")
         self.btn_delete = QPushButton("Delete")
 
-        btn_layout.addWidget(self.btn_go_list)
         btn_layout.addWidget(self.btn_edit)
         btn_layout.addWidget(self.btn_delete)
 

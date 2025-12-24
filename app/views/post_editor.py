@@ -15,30 +15,34 @@ class PostEditorPage(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
+        btn_to_list_layout = QHBoxLayout()
+        self.btn_go_list = QPushButton("List")
+        btn_to_list_layout.addWidget(self.btn_go_list)
+        layout.addLayout(btn_to_list_layout)
+
         self.lable_title = QLabel("Subject")
         self.input_title = QLineEdit()
         self.input_title.setPlaceholderText("Please enter your subject")
         layout.addWidget(self.lable_title)
         layout.addWidget(self.input_title)
 
-        self.input_content = QTextEdit()
-        self.input_content.setPlaceholderText("Please enter your content")
-        layout.addWidget(self.input_content)
-
         self.lable_author = QLabel("Author")
         self.input_author = QLineEdit()
+        self.input_author.setPlaceholderText("Please enter your author name")
         layout.addWidget(self.lable_author)
         layout.addWidget(self.input_author)
 
+        self.input_content = QTextEdit()
+        self.input_content.setPlaceholderText("Please enter your content")
+        self.input_content.setTabChangesFocus(True)
+        layout.addWidget(self.input_content)
+
         btn_layout = QHBoxLayout()
-        self.btn_go_list = QPushButton("List")
         self.btn_back = QPushButton("Back")
         self.btn_save = QPushButton("Post")
 
-        btn_layout.addWidget(self.btn_go_list)
         btn_layout.addWidget(self.btn_back)
         btn_layout.addWidget(self.btn_save)
-
         layout.addLayout(btn_layout)
 
         self.setLayout(layout)
@@ -53,6 +57,8 @@ class PostEditorPage(QWidget):
             self.input_title.setText(post.title)
             self.input_author.setText(post.author)
             self.input_content.setText(post.content)
+
+            self.btn_back.setVisible(True)
             self.btn_save.setText("Save")
         else:
             self.current_post_id = None
