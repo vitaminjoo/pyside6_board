@@ -1,5 +1,5 @@
-import sqlite3
 import os
+import sqlite3
 from contextlib import contextmanager
 
 DB_FILE = "board.db"
@@ -9,6 +9,7 @@ class DatabaseManager:
     """
     데이터베이스 연결 및 초기화를 담당하는 클래스
     """
+
     def __init__(self, db_file: str = "board.db"):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(base_dir)
@@ -32,5 +33,6 @@ class DatabaseManager:
             raise e
         finally:
             conn.close()
+
 
 db = DatabaseManager()

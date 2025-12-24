@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from app.database import db
 from app.models.post_model import Post
@@ -17,9 +17,8 @@ class PostDao:
         with db.get_cursor() as cursor:
             sql = "INSERT INTO posts (title, content, author) VALUES (?, ?, ?)"
             cursor.execute(sql, (title, content, author))
-        print(f"글 작성 완료: {title}")
 
-    def get_all_posts(self) -> List[Post]:
+    def get_all_posts(self) -> list[Post]:
         with db.get_cursor() as cursor:
             sql = "SELECT * FROM posts ORDER BY created_at DESC"
             cursor.execute(sql)
@@ -69,4 +68,14 @@ class PostDao:
         with db.get_cursor() as cursor:
             sql = "DELETE FROM posts WHERE id = ?"
             cursor.execute(sql, (id,))
-        print(f"삭제 완료: id: {id}")
+
+    def delete_posts(self, ids: list[int]) -> int:
+        if not ids:
+            return 0
+        count = 0
+        with db.get_cursor() as cursor:
+            placeholders = ', '.join(['?'] * len(ids))
+            sql = "DELETE FROM posts WHERE id IN ({})".format(placeholders)
+            cursor.execute(sql, ids)
+            count = cursor.rowcount
+        return count

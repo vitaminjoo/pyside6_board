@@ -1,5 +1,6 @@
 from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex
 
+
 class PostTableModel(QAbstractTableModel):
     def __init__(self, posts=None):
         super().__init__()
@@ -34,6 +35,3 @@ class PostTableModel(QAbstractTableModel):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return self._headers[section]
         return None
-
-
-

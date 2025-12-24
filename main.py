@@ -1,17 +1,20 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget
+
+from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox
+
 from app.database import db
 from app.models.post_model import Post
 from app.viewmodels.post_viewmodel import PostViewModel
-
-from app.views.post_list import PostListPage
 from app.views.post_detail import PostDetailPage
 from app.views.post_editor import PostEditorPage
+from app.views.post_list import PostListPage
+
 
 def init_app():
     conn = db.get_connection()
     Post.create_table(conn)
     conn.close()
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -20,6 +23,8 @@ class MainWindow(QMainWindow):
         self.resize(800, 600)
 
         self.view_model = PostViewModel()
+        self.view_model.error_message_signal.connect(self.show_global_error)
+        self.view_model.message_signal.connect(self.show_global_alarm)
         self.init_ui()
         self.init_navigation()
 
@@ -48,12 +53,21 @@ class MainWindow(QMainWindow):
     # 화면 전환 함수
     def go_to_list(self):
         self.stack.setCurrentIndex(0)
+
     def go_to_detail(self, post):
         self.detail_page.set_data(post)
         self.stack.setCurrentIndex(1)
+
     def go_to_edit(self, post=None):
         self.editor_page.set_data(post)
         self.stack.setCurrentIndex(2)
+
+    def show_global_error(self, message: str = None):
+        QMessageBox.critical(self, "Error", message)
+
+    def show_global_alarm(self, message: str = None):
+        QMessageBox.about(self, "Alarm", message)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

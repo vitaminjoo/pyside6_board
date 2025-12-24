@@ -12,6 +12,7 @@ class PostViewModel(QObject):
     화면 로직(상태 관리)가 여기서 수행됩니다.
     """
     post_list_updated = Signal(list)
+    error_message_signal = Signal(str)
     message_signal = Signal(str)
 
     def __init__(self):
@@ -29,30 +30,39 @@ class PostViewModel(QObject):
 
     def add_post(self, title: str, content: str, author: str = None) -> bool:
         try:
-            if not title or not content:
-                self.message_signal.emit("제목과 내용을 모두 입력해주세요")
-                return
             self.post_dao.insert_post(title, content, author)
-            self.message_signal.emit("게시글이 성공적으로 등록되었습니다.")
+            self.message_signal.emit("Post Added.")
             self.fetch_posts()
             return True
         except Exception as e:
+            self.error_message_signal.emit(e)
             return False
 
     def update_post(self, id: int, title: str, content: str, author: str = None) -> bool:
         try:
             self.post_dao.update_post(id, title, content, author)
-            self.message_signal.emit("게시글이 수정되었습니다.")
+            self.message_signal.emit("Post Updated.")
             self.fetch_posts()
             return True
         except Exception as e:
+            self.error_message_signal.emit(e)
             return False
 
     def delete_post(self, id: int) -> bool:
         try:
             self.post_dao.delete_post(id)
-            self.message_signal.emit("게시글이 삭제되었습니다.")
             self.fetch_posts()
             return True
         except Exception as e:
+            self.error_message_signal.emit(e)
+            return False
+
+    def delete_posts(self, ids : list[int]) -> bool:
+        try:
+            self.post_dao.delete_posts(ids)
+            self.fetch_posts()
+            self.message_signal.emit(f"Posts Deleted. : {len(ids)} ")
+            return True
+        except Exception as e:
+            self.error_message_signal.emit(e)
             return False

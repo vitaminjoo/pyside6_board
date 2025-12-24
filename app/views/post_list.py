@@ -1,11 +1,10 @@
-from typing import List
-
+from PySide6.QtCore import Signal, QModelIndex
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPushButton, QAbstractItemView, \
     QHeaderView, QMessageBox
-from PySide6.QtCore import Signal, QModelIndex
 
 from app.models.post_model import Post
 from app.views.post_table_model import PostTableModel
+
 
 class PostListPage(QWidget):
     request_post_signal = Signal()
@@ -20,7 +19,7 @@ class PostListPage(QWidget):
         self.init_signals()
 
     def init_ui(self):
-        #TODO: UX 고려해서 버튼 배치하기
+        # TODO: UX 고려해서 버튼 배치하기
         layout = QVBoxLayout()
         self.table = QTableView()
 
@@ -48,7 +47,7 @@ class PostListPage(QWidget):
         self.btn_post.clicked.connect(self.request_post_signal.emit)
         self.btn_remove.clicked.connect(self.delete_selected_posts)
 
-    def update_table(self, posts: List[Post]):
+    def update_table(self, posts: list[Post]):
         self.current_posts = posts
         self.model = PostTableModel(posts)
         self.table.setModel(self.model)
@@ -61,7 +60,6 @@ class PostListPage(QWidget):
 
     def delete_selected_posts(self):
         selected_indexes = self.table.selectionModel().selectedRows()
-        print(selected_indexes)
 
         if not selected_indexes:
             return
@@ -78,5 +76,5 @@ class PostListPage(QWidget):
             if row < len(self.current_posts):
                 ids_to_delete.append(self.current_posts[row].id)
 
-        for post_id in ids_to_delete:
-            self.view_model.delete_post(post_id)
+        if ids_to_delete:
+            self.view_model.delete_posts(ids_to_delete)

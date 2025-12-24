@@ -1,13 +1,10 @@
-from typing import Optional
-
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTextBrowser, QMessageBox
-from PySide6.QtCore import Signal, Qt
 
 from app.models.post_model import Post
 
 
 class PostDetailPage(QWidget):
-
     request_go_list = Signal()
     request_edit_signal = Signal(object)
     request_delete_signal = Signal(object)
@@ -19,7 +16,7 @@ class PostDetailPage(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        #TODO: UX 고려해서 재배치 필요
+        # TODO: UX 고려해서 재배치 필요
         layout = QVBoxLayout()
 
         self.lable_title = QLabel("제목")
@@ -47,7 +44,6 @@ class PostDetailPage(QWidget):
         self.btn_go_list.clicked.connect(self.request_go_list.emit)
         self.btn_edit.clicked.connect(self.on_edit_clicked)
         self.btn_delete.clicked.connect(self.on_delete_clicked)
-
 
     def set_data(self, post: Post):
         self.current_post = post
@@ -77,4 +73,3 @@ class PostDetailPage(QWidget):
         if confirm_delete == QMessageBox.Yes:
             self.view_model.delete_post(self.current_post.id)
             self.request_go_list.emit()
-

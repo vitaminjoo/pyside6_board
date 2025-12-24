@@ -1,7 +1,5 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QLineEdit, QMessageBox
-
-from app.models.post_model import Post
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QLineEdit
 
 
 class PostEditorPage(QWidget):
@@ -49,7 +47,6 @@ class PostEditorPage(QWidget):
         self.btn_go_list.clicked.connect(self.request_go_list.emit)
         self.btn_back.clicked.connect(self.back_to_post)
 
-
     def set_data(self, post=None):
         if post:
             self.current_post_id = post.id
@@ -73,7 +70,7 @@ class PostEditorPage(QWidget):
         author = self.input_author.text().strip()
 
         if not title or not content:
-            QMessageBox.warning(self, "알림", "제목과 내용을 입력해주세요.")
+            self.view_model.message_signal.emit("Please enter title and content")
             return
 
         isPass = False
@@ -83,11 +80,8 @@ class PostEditorPage(QWidget):
             isPass = self.view_model.add_post(title, content, author)
 
         if isPass:
-            QMessageBox.about(self, "작성 완료", "글이 정상적으로 게시됐습니다.")
             self.request_go_list.emit()
 
     def back_to_post(self):
         post = self.view_model.get_post(self.current_post_id)
         self.request_back_to_post.emit(post)
-
-
