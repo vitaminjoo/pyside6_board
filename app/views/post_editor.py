@@ -17,23 +17,20 @@ class PostEditorPage(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
-        self.lable_title = QLabel("제목")
+        self.lable_title = QLabel("Subject")
         self.input_title = QLineEdit()
-        self.input_title.setPlaceholderText("제목을 입력하세요")
+        self.input_title.setPlaceholderText("Please enter your subject")
         layout.addWidget(self.lable_title)
         layout.addWidget(self.input_title)
 
         self.input_content = QTextEdit()
-        self.input_content.setPlaceholderText("내용을 입력하세요")
+        self.input_content.setPlaceholderText("Please enter your content")
         layout.addWidget(self.input_content)
 
-        self.lable_author = QLabel("작성자")
+        self.lable_author = QLabel("Author")
         self.input_author = QLineEdit()
-        self.lable_date = QLabel("작성일")
         layout.addWidget(self.lable_author)
         layout.addWidget(self.input_author)
-        layout.addWidget(self.lable_date)
-
 
         btn_layout = QHBoxLayout()
         self.btn_go_list = QPushButton("List")
@@ -44,19 +41,13 @@ class PostEditorPage(QWidget):
         btn_layout.addWidget(self.btn_back)
         btn_layout.addWidget(self.btn_save)
 
-        btn_delete_layout = QHBoxLayout()
-        self.btn_delete = QPushButton("Delete")
-        btn_delete_layout.addWidget(self.btn_delete)
-
         layout.addLayout(btn_layout)
-        layout.addLayout(btn_delete_layout)
 
         self.setLayout(layout)
 
         self.btn_save.clicked.connect(self.save_post)
         self.btn_go_list.clicked.connect(self.request_go_list.emit)
         self.btn_back.clicked.connect(self.back_to_post)
-        # self.btn.delete.clicked.connect()
 
 
     def set_data(self, post=None):
@@ -66,7 +57,7 @@ class PostEditorPage(QWidget):
             self.input_author.setText(post.author)
             self.input_content.setText(post.content)
             self.lable_date.setText(post.updated_at or post.created_at)
-            self.btn_save.setText("Edit")
+            self.btn_save.setText("Save")
         else:
             self.current_post_id = None
             self.input_title.clear()
@@ -74,7 +65,6 @@ class PostEditorPage(QWidget):
             self.input_content.clear()
 
             self.btn_back.setVisible(False)
-            self.btn_delete.setVisible(False)
             self.btn_save.setText("Post")
 
     def save_post(self):

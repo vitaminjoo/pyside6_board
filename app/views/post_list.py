@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPushButton, QAbstractItemView, QHeaderView
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPushButton, QAbstractItemView, \
+    QHeaderView, QMessageBox
 from PySide6.QtCore import Signal
 
 from app.views.post_table_model import PostTableModel
@@ -21,6 +22,8 @@ class PostListPage(QWidget):
         self.table = QTableView()
 
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         layout.addWidget(self.table)
@@ -40,6 +43,7 @@ class PostListPage(QWidget):
         self.view_model.post_list_updated.connect(self.update_table)
         self.table.doubleClicked.connect(self.on_double_click)
         self.btn_post.clicked.connect(self.request_post_signal.emit)
+        self.btn_remove.clicked.connect(self.delete_selected_posts)
 
     def update_table(self, posts):
         self.current_posts = posts
@@ -48,8 +52,28 @@ class PostListPage(QWidget):
 
     def on_double_click(self, index):
         row = index.row()
-
         if row < len(self.current_posts):
             selected_post = self.current_posts[row]
-
             self.request_read_signal.emit(selected_post)
+
+    def delete_selected_posts(self):
+        selected_indexes = self.table.selectionModel().selectedRows()
+        print(selected_indexes)
+
+        if not selected_indexes:
+            return
+
+        msg = f"Are you sure you want to delete {len(selected_indexes)} posts?"
+        reply = QMessageBox.question(self, "Delece Confirm", msg, QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.No:
+            return
+
+        ids_to_delete = []
+        for index in selected_indexes:
+            row = index.row()
+            if row < len(self.current_posts):
+                ids_to_delete.append(self.current_posts[row].id)
+
+        for post_id in ids_to_delete:
+            self.view_model.delete_post(post_id)

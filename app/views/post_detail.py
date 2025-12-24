@@ -41,7 +41,7 @@ class PostDetailPage(QWidget):
 
         self.btn_go_list.clicked.connect(self.request_go_list.emit)
         self.btn_edit.clicked.connect(self.on_edit_clicked)
-        self.btn_delete.clicked.connect(self.request_delete_signal.emit)
+        self.btn_delete.clicked.connect(self.on_delete_clicked)
 
 
     def set_data(self, post):
@@ -64,8 +64,8 @@ class PostDetailPage(QWidget):
 
         confirm_delete = QMessageBox.question(
             self,
-            "Delete Confirm"
-            f"Are you sure you want to delete {self.current_post.title}?",
+            "Delete Confirm",
+            f"Are you sure you want to delete this post?",
             QMessageBox.Yes | QMessageBox.No
         )
 
