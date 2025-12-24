@@ -1,5 +1,10 @@
+from typing import Optional
+
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTextBrowser, QMessageBox
 from PySide6.QtCore import Signal, Qt
+
+from app.models.post_model import Post
+
 
 class PostDetailPage(QWidget):
 
@@ -44,7 +49,7 @@ class PostDetailPage(QWidget):
         self.btn_delete.clicked.connect(self.on_delete_clicked)
 
 
-    def set_data(self, post):
+    def set_data(self, post: Post):
         self.current_post = post
 
         self.lable_title.setText(post.title)

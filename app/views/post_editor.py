@@ -56,7 +56,6 @@ class PostEditorPage(QWidget):
             self.input_title.setText(post.title)
             self.input_author.setText(post.author)
             self.input_content.setText(post.content)
-            self.lable_date.setText(post.updated_at or post.created_at)
             self.btn_save.setText("Save")
         else:
             self.current_post_id = None
@@ -70,8 +69,8 @@ class PostEditorPage(QWidget):
     def save_post(self):
         id = self.current_post_id
         title = self.input_title.text().strip()
-        author = self.input_author.text().strip()
         content = self.input_content.toPlainText().strip()
+        author = self.input_author.text().strip()
 
         if not title or not content:
             QMessageBox.warning(self, "알림", "제목과 내용을 입력해주세요.")
@@ -79,7 +78,7 @@ class PostEditorPage(QWidget):
 
         isPass = False
         if id:
-            isPass = self.view_model.update_post(id, title, author, content)
+            isPass = self.view_model.update_post(id, title, content, author)
         else:
             isPass = self.view_model.add_post(title, content, author)
 

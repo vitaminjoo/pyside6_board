@@ -1,3 +1,5 @@
+from typing import List, Optional
+
 from app.database import db
 from app.models.post_model import Post
 
@@ -8,7 +10,7 @@ class PostDao:
     SQL 쿼리는 이 파일 안에만 존재해야 합니다.
     """
 
-    def insert_post(self, title, content, author):
+    def insert_post(self, title: str, content: str, author: str) -> None:
         if not author:
             author = "anonymous"
 
@@ -17,8 +19,7 @@ class PostDao:
             cursor.execute(sql, (title, content, author))
         print(f"글 작성 완료: {title}")
 
-    def get_all_posts(self):
-
+    def get_all_posts(self) -> List[Post]:
         with db.get_cursor() as cursor:
             sql = "SELECT * FROM posts ORDER BY created_at DESC"
             cursor.execute(sql)
@@ -37,7 +38,7 @@ class PostDao:
             posts_obj.append(post)
         return posts_obj
 
-    def get_post(self, id):
+    def get_post(self, id: int) -> Optional[Post]:
 
         with db.get_cursor() as cursor:
             sql = "SELECT * FROM posts WHERE id = ?"
@@ -56,7 +57,7 @@ class PostDao:
         else:
             return None
 
-    def update_post(self, id, title, author, content):
+    def update_post(self, id: int, title: str, author: str, content: str) -> None:
         if not author:
             author = "anonymous"
 
@@ -64,7 +65,7 @@ class PostDao:
             sql = "UPDATE posts SET title=?, author =?, content=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
             cursor.execute(sql, (title, author, content, id))
 
-    def delete_post(self, id):
+    def delete_post(self, id: int) -> None:
         with db.get_cursor() as cursor:
             sql = "DELETE FROM posts WHERE id = ?"
             cursor.execute(sql, (id,))

@@ -1,7 +1,10 @@
+from typing import List
+
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPushButton, QAbstractItemView, \
     QHeaderView, QMessageBox
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QModelIndex
 
+from app.models.post_model import Post
 from app.views.post_table_model import PostTableModel
 
 class PostListPage(QWidget):
@@ -45,12 +48,12 @@ class PostListPage(QWidget):
         self.btn_post.clicked.connect(self.request_post_signal.emit)
         self.btn_remove.clicked.connect(self.delete_selected_posts)
 
-    def update_table(self, posts):
+    def update_table(self, posts: List[Post]):
         self.current_posts = posts
         self.model = PostTableModel(posts)
         self.table.setModel(self.model)
 
-    def on_double_click(self, index):
+    def on_double_click(self, index: QModelIndex):
         row = index.row()
         if row < len(self.current_posts):
             selected_post = self.current_posts[row]
