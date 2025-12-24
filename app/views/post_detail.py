@@ -3,7 +3,7 @@ from PySide6.QtCore import Signal, Qt
 
 class PostDetailPage(QWidget):
 
-    request_go_back = Signal()
+    request_go_list = Signal()
     request_edit_signal = Signal(object)
     request_delete_signal = Signal(object)
 
@@ -14,6 +14,7 @@ class PostDetailPage(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        #TODO: UX 고려해서 재배치 필요
         layout = QVBoxLayout()
 
         self.lable_title = QLabel("제목")
@@ -27,19 +28,19 @@ class PostDetailPage(QWidget):
         layout.addWidget(self.text_content)
 
         btn_layout = QHBoxLayout()
-        self.btn_back = QPushButton("List")
+        self.btn_go_list = QPushButton("List")
         self.btn_edit = QPushButton("Edit")
         self.btn_delete = QPushButton("Delete")
 
-        btn_layout.addWidget(self.btn_back)
+        btn_layout.addWidget(self.btn_go_list)
         btn_layout.addWidget(self.btn_edit)
         btn_layout.addWidget(self.btn_delete)
 
         layout.addLayout(btn_layout)
         self.setLayout(layout)
 
-        self.btn_back.clicked.connect(self.request_go_back.emit)
-        self.btn_edit.clicked.connect(self.request_edit_signal.emit)
+        self.btn_go_list.clicked.connect(self.request_go_list.emit)
+        self.btn_edit.clicked.connect(self.on_edit_clicked)
         self.btn_delete.clicked.connect(self.request_delete_signal.emit)
 
 
@@ -70,5 +71,5 @@ class PostDetailPage(QWidget):
 
         if confirm_delete == QMessageBox.Yes:
             self.view_model.delete_post(self.current_post.id)
-            self.request_go_back.emit()
+            self.request_go_list.emit()
 

@@ -19,23 +19,38 @@ class PostViewModel(QObject):
         data = self.post_dao.get_all_posts()
         self.post_list_updated.emit(data)
 
+    def get_post(self, post_id):
+        data = self.post_dao.get_post(post_id)
+        return data
+
     def add_post(self, title, content, author=""):
-        if not title or not content:
-            self.message_signal.emit("제목과 내용을 모두 입력해주세요")
-            return
+        try:
+            if not title or not content:
+                self.message_signal.emit("제목과 내용을 모두 입력해주세요")
+                return
 
-        self.post_dao.insert_post(title, content, author)
-        self.message_signal.emit("게시글이 성공적으로 등록되었습니다.")
+            self.post_dao.insert_post(title, content, author)
+            self.message_signal.emit("게시글이 성공적으로 등록되었습니다.")
+            self.fetch_posts()
+            return True
+        except Exception as e:
+            return False
 
-        self.fetch_posts()
-
-    def update_post(self, post_id, title, content):
-        self.post_dao.update_post(post_id, title, content)
-        self.message_signal.emit("게시글이 수정되었습니다.")
-        self.fetch_posts()
+    def update_post(self, post_id, title, author, content):
+        try:
+            self.post_dao.update_post(post_id, title, author, content)
+            self.message_signal.emit("게시글이 수정되었습니다.")
+            self.fetch_posts()
+            return True
+        except Exception as e:
+            return False
 
     def delete_post(self, post_id):
-        self.post_dao.delete_post(post_id)
-        self.message_signal.emit("게시글이 삭제되었습니다.")
-        self.fetch_posts()
+        try:
+            self.post_dao.delete_post(post_id)
+            self.message_signal.emit("게시글이 삭제되었습니다.")
+            self.fetch_posts()
+            return True
+        except Exception as e:
+            return False
 

@@ -38,9 +38,12 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.editor_page)
 
     def init_navigation(self):
-        self.list_page.request_write_signal.connect(self.go_to_write)
+        self.list_page.request_post_signal.connect(self.go_to_edit)
         self.list_page.request_read_signal.connect(self.go_to_detail)
-        self.detail_page.request_go_back.connect(self.go_to_list)
+        self.detail_page.request_go_list.connect(self.go_to_list)
+        self.detail_page.request_edit_signal.connect(self.go_to_edit)
+        self.editor_page.request_go_list.connect(self.go_to_list)
+        self.editor_page.request_back_to_post.connect(self.go_to_detail)
 
     # 화면 전환 함수
     def go_to_list(self):
@@ -48,10 +51,10 @@ class MainWindow(QMainWindow):
     def go_to_detail(self, post):
         self.detail_page.set_data(post)
         self.stack.setCurrentIndex(1)
-    def go_to_write(self):
+    # def go_to_write(self):
+    def go_to_edit(self, post=None):
+        self.editor_page.set_data(post)
         self.stack.setCurrentIndex(2)
-    # def go_to_edit(self):
-    #
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

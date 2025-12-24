@@ -4,7 +4,7 @@ class PostTableModel(QAbstractTableModel):
     def __init__(self, posts=None):
         super().__init__()
         self.posts = posts or []
-        self._headers = ["글 번호", "제목", "작성자", "작성일"]
+        self._headers = ["No.", "Subject", "Author", "Date"]
 
     def rowCount(self, parent=QModelIndex()):
         return len(self.posts)

@@ -8,7 +8,10 @@ class PostDao:
     SQL 쿼리는 이 파일 안에만 존재해야 합니다.
     """
 
-    def insert_post(self, title, content, author="anonymous"):
+    def insert_post(self, title, content, author):
+        if not author:
+            author = "anonymous"
+
         conn = db.get_connection()
         cursor = conn.cursor()
 
@@ -48,14 +51,25 @@ class PostDao:
         cursor.execute(sql, (id,))
         row = cursor.fetchone()
         conn.close()
-        return row
 
-    def update_post(self, id, title, content):
+        if row:
+            return Post(
+                id=row['id'],
+                title=row['title'],
+                content=row['content'],
+                author=row['author'],
+                created_at=row['created_at'],
+                updated_at=row['updated_at']
+            )
+        else:
+            return None
+
+    def update_post(self, id, title, author, content):
         conn = db.get_connection()
         cursor = conn.cursor()
 
-        sql = "UPDATE posts SET title=?, content=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-        cursor.execute(sql, (title, content, id))
+        sql = "UPDATE posts SET title=?, author =?, content=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+        cursor.execute(sql, (title, author, content, id))
         conn.commit()
         conn.close()
         print(f"수정 완료: ID: {id}")

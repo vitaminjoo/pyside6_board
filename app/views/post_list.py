@@ -4,7 +4,7 @@ from PySide6.QtCore import Signal
 from app.views.post_table_model import PostTableModel
 
 class PostListPage(QWidget):
-    request_write_signal = Signal()
+    request_post_signal = Signal()
     request_read_signal = Signal(object)
 
     def __init__(self, view_model):
@@ -16,6 +16,7 @@ class PostListPage(QWidget):
         self.init_signals()
 
     def init_ui(self):
+        #TODO: UX 고려해서 버튼 배치하기
         layout = QVBoxLayout()
         self.table = QTableView()
 
@@ -26,12 +27,10 @@ class PostListPage(QWidget):
 
         btn_layout = QHBoxLayout()
         btn_layout.setSpacing(10)
-        self.btn_add = QPushButton("Post")
-        self.btn_edit = QPushButton("Edit")
+        self.btn_post = QPushButton("Post")
         self.btn_remove = QPushButton("Remove")
         btn_layout.addStretch()
-        btn_layout.addWidget(self.btn_add)
-        btn_layout.addWidget(self.btn_edit)
+        btn_layout.addWidget(self.btn_post)
         btn_layout.addWidget(self.btn_remove)
 
         layout.addLayout(btn_layout)
@@ -39,16 +38,13 @@ class PostListPage(QWidget):
 
     def init_signals(self):
         self.view_model.post_list_updated.connect(self.update_table)
-
         self.table.doubleClicked.connect(self.on_double_click)
-
-        pass
+        self.btn_post.clicked.connect(self.request_post_signal.emit)
 
     def update_table(self, posts):
         self.current_posts = posts
         self.model = PostTableModel(posts)
         self.table.setModel(self.model)
-        pass
 
     def on_double_click(self, index):
         row = index.row()

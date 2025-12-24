@@ -6,7 +6,7 @@ class Post:
         self.id = id
         self.title = title
         self.content = content
-        self.author = content
+        self.author = author
         self.created_at = created_at
         self.updated_at = updated_at
 
