@@ -1,3 +1,4 @@
+import math
 from typing import Optional
 
 from PySide6.QtCore import QObject, Signal
@@ -12,6 +13,7 @@ class PostViewModel(QObject):
     화면 로직(상태 관리)가 여기서 수행됩니다.
     """
     post_list_updated = Signal(list)
+    paging_info_updated = Signal(int, int)
     error_message_signal = Signal(str)
     message_signal = Signal(str)
 
@@ -19,10 +21,47 @@ class PostViewModel(QObject):
         super().__init__()
         self.post_dao = PostDao()
 
+        self.current_page = 1
+        self.items_per_page = 16
+        self.total_count = 0
+        self.total_pages = 1
+
     def fetch_posts(self) -> None:
-        # DB에서 글 목록을 가져온 뒤, View 에게 알림
-        data = self.post_dao.get_all_posts()
-        self.post_list_updated.emit(data)
+        try:
+            self.total_count = self.post_dao.get_total_count()
+
+            if self.total_count == 0:
+                self.total_pages = 1
+            else:
+                self.total_pages = math.ceil(self.total_count / self.items_per_page)
+
+            posts = self.post_dao.get_posts_paginated(self.current_page, self.items_per_page)
+            self.post_list_updated.emit(posts)
+            self.paging_info_updated.emit(self.current_page, self.total_pages)
+        except Exception as e:
+            self.error_message_signal.emit(e)
+
+    def go_prev_page(self, step: int = 1):
+        print(step)
+        if self.current_page > 1:
+            if self.current_page - step < 0:
+                self.current_page = 1
+            else:
+                self.current_page -= step
+            self.fetch_posts()
+
+    def go_next_page(self, step: int = 1):
+        if self.current_page < self.total_pages:
+            if self.current_page + step > self.total_pages:
+                self.current_page = self.total_pages
+            else:
+                self.current_page += step
+            self.fetch_posts()
+
+    def go_to_page(self, page: int):
+        if 1 <= page <= self.total_pages:
+            self.current_page = page
+            self.fetch_posts()
 
     def get_post(self, id: int) -> Optional[Post]:
         data = self.post_dao.get_post(id)

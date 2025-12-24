@@ -22,6 +22,7 @@ class PostDetailPage(QWidget):
         btn_to_list_layout = QHBoxLayout()
         self.btn_go_list = QPushButton("List")
         btn_to_list_layout.addWidget(self.btn_go_list)
+        btn_to_list_layout.addStretch()
         layout.addLayout(btn_to_list_layout)
 
         self.lable_title = QLabel("Subject")

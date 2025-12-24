@@ -36,7 +36,6 @@ class PostDao:
         return posts_obj
 
     def get_post(self, id: int) -> Optional[Post]:
-
         with db.get_cursor() as cursor:
             sql = "SELECT * FROM posts WHERE id = ?"
             cursor.execute(sql, (id,))
@@ -75,3 +74,30 @@ class PostDao:
             cursor.execute(sql, ids)
             count = cursor.rowcount
         return count
+
+    def get_posts_paginated(self, page: int, limit: int) -> list[Post]:
+        offset = (page - 1) * limit
+        with db.get_cursor() as cursor:
+            sql = "SELECT * FROM posts ORDER BY created_at DESC LIMIT ? OFFSET ?"
+            cursor.execute(sql, (limit, offset))
+            rows = cursor.fetchall()
+
+        posts_obj = []
+        for row in rows:
+            post = Post(
+                id=row['id'],
+                title=row['title'],
+                content=row['content'],
+                author=row['author'],
+                created_at=row['created_at'],
+                updated_at=row['updated_at']
+            )
+            posts_obj.append(post)
+        return posts_obj
+
+    def get_total_count(self) -> int:
+        with db.get_cursor() as cursor:
+            sql = "SELECT COUNT(*) FROM posts"
+            cursor.execute(sql)
+            count = cursor.fetchone()[0]
+            return count if count else 0
