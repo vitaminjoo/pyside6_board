@@ -12,45 +12,37 @@ class PostDao:
         if not author:
             author = "anonymous"
 
-        conn = db.get_connection()
-        cursor = conn.cursor()
-
-        sql = "INSERT INTO posts (title, content, author) VALUES (?, ?, ?)"
-        cursor.execute(sql, (title, content, author))
-
-        conn.commit()
-        conn.close()
+        with db.get_cursor() as cursor:
+            sql = "INSERT INTO posts (title, content, author) VALUES (?, ?, ?)"
+            cursor.execute(sql, (title, content, author))
         print(f"글 작성 완료: {title}")
 
     def get_all_posts(self):
-        conn = db.get_connection()
-        cursor = conn.cursor()
 
-        sql = "SELECT * FROM posts ORDER BY created_at DESC"
-        cursor.execute(sql)
-        rows = cursor.fetchall()
-        conn.close()
+        with db.get_cursor() as cursor:
+            sql = "SELECT * FROM posts ORDER BY created_at DESC"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
 
         posts_obj = []
         for row in rows:
-            post = Post(id=row['id'],
-            title=row['title'],
-            content=row['content'],
-            author=row['author'],
-            created_at=row['created_at'],
-            updated_at=row['updated_at']
+            post = Post(
+                id=row['id'],
+                title=row['title'],
+                content=row['content'],
+                author=row['author'],
+                created_at=row['created_at'],
+                updated_at=row['updated_at']
             )
             posts_obj.append(post)
         return posts_obj
 
     def get_post(self, id):
-        conn = db.get_connection()
-        cursor = conn.cursor()
 
-        sql = "SELECT * FROM posts WHERE id = ?"
-        cursor.execute(sql, (id,))
-        row = cursor.fetchone()
-        conn.close()
+        with db.get_cursor() as cursor:
+            sql = "SELECT * FROM posts WHERE id = ?"
+            cursor.execute(sql, (id,))
+            row = cursor.fetchone()
 
         if row:
             return Post(
@@ -65,22 +57,15 @@ class PostDao:
             return None
 
     def update_post(self, id, title, author, content):
-        conn = db.get_connection()
-        cursor = conn.cursor()
+        if not author:
+            author = "anonymous"
 
-        sql = "UPDATE posts SET title=?, author =?, content=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-        cursor.execute(sql, (title, author, content, id))
-        conn.commit()
-        conn.close()
-        print(f"수정 완료: ID: {id}")
+        with db.get_cursor() as cursor:
+            sql = "UPDATE posts SET title=?, author =?, content=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+            cursor.execute(sql, (title, author, content, id))
 
     def delete_post(self, id):
-        conn = db.get_connection()
-        cursor = conn.cursor()
-
-        sql = "DELETE FROM posts WHERE id = ?"
-        cursor.execute(sql, (id,))
-        conn.commit()
-        conn.close()
+        with db.get_cursor() as cursor:
+            sql = "DELETE FROM posts WHERE id = ?"
+            cursor.execute(sql, (id,))
         print(f"삭제 완료: id: {id}")
-

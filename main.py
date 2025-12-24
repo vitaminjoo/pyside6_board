@@ -51,7 +51,6 @@ class MainWindow(QMainWindow):
     def go_to_detail(self, post):
         self.detail_page.set_data(post)
         self.stack.setCurrentIndex(1)
-    # def go_to_write(self):
     def go_to_edit(self, post=None):
         self.editor_page.set_data(post)
         self.stack.setCurrentIndex(2)
