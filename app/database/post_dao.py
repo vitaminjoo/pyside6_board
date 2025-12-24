@@ -1,7 +1,7 @@
 from typing import Optional
 
 from app.database import db
-from app.models.post_model import Post
+from app.models import Post
 
 
 class PostDao:
@@ -56,13 +56,13 @@ class PostDao:
         else:
             return None
 
-    def update_post(self, id: int, title: str, author: str, content: str) -> None:
+    def update_post(self, id: int, title: str, content: str, author: str) -> None:
         if not author:
             author = "anonymous"
 
         with db.get_cursor() as cursor:
-            sql = "UPDATE posts SET title=?, author =?, content=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-            cursor.execute(sql, (title, author, content, id))
+            sql = "UPDATE posts SET title=?, content =?, author=?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+            cursor.execute(sql, (title, content, author, id))
 
     def delete_post(self, id: int) -> None:
         with db.get_cursor() as cursor:

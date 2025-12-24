@@ -2,8 +2,8 @@ from PySide6.QtCore import Signal, QModelIndex
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPushButton, QAbstractItemView, \
     QHeaderView, QMessageBox
 
-from app.models.post_model import Post
-from app.views.post_table_model import PostTableModel
+from app.models import Post
+from app.views import PostTableModel
 
 
 class PostListPage(QWidget):

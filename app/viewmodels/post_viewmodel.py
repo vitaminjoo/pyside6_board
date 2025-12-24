@@ -2,8 +2,8 @@ from typing import Optional
 
 from PySide6.QtCore import QObject, Signal
 
-from app.models.post_dao import PostDao
-from app.models.post_model import Post
+from app.models import Post
+from app.database import PostDao
 
 
 class PostViewModel(QObject):

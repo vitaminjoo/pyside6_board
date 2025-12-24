@@ -3,12 +3,9 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox
 
 from app.database import db
-from app.models.post_model import Post
-from app.viewmodels.post_viewmodel import PostViewModel
-from app.views.post_detail import PostDetailPage
-from app.views.post_editor import PostEditorPage
-from app.views.post_list import PostListPage
-
+from app.models import Post
+from app.viewmodels import PostViewModel
+from app.views import PostDetailPage, PostEditorPage, PostListPage
 
 def init_app():
     conn = db.get_connection()

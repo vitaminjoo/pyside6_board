@@ -1,5 +1,5 @@
 from app.database import db
-from app.models.post_dao import PostDao
+from app.database.post_dao import PostDao
 
 def run_test():
 
