@@ -20,26 +20,38 @@ class PostViewModel(QObject):
     def __init__(self):
         super().__init__()
         self.post_dao = PostDao()
-
         self.current_page = 1
         self.items_per_page = 16
         self.total_count = 0
         self.total_pages = 1
 
+        self.current_keyword = ""
+
     def fetch_posts(self) -> None:
         try:
-            self.total_count = self.post_dao.get_total_count()
+            # 검색한 결과 fetch
+            if self.current_keyword:
+                self.total_count = self.post_dao.get_search_count(self.current_keyword)
+                posts = self.post_dao.get_search_posts_paginated(
+                    self.current_keyword, self.current_page, self.items_per_page
+                )
+            # 전체 리스트 fetch
+            else:
+                self.total_count = self.post_dao.get_total_count()
+                posts = self.post_dao.get_posts_paginated(
+                    self.current_page, self.items_per_page
+                )
 
             if self.total_count == 0:
                 self.total_pages = 1
             else:
                 self.total_pages = math.ceil(self.total_count / self.items_per_page)
 
-            posts = self.post_dao.get_posts_paginated(self.current_page, self.items_per_page)
             self.post_list_updated.emit(posts)
             self.paging_info_updated.emit(self.current_page, self.total_pages)
+
         except Exception as e:
-            self.error_message_signal.emit(e)
+            self.error_message_signal.emit(f"Data Load Failed: {e}")
 
     def go_prev_page(self, step: int = 1):
         print(step)
@@ -109,3 +121,12 @@ class PostViewModel(QObject):
         except Exception as e:
             self.error_message_signal.emit(e)
             return False
+
+    def search_posts(self, keyword: str) -> list[Post] | None:
+        try:
+            self.current_keyword = keyword.strip()
+            self.current_page = 1
+            self.fetch_posts()
+        except Exception as e:
+            self.error_message_signal.emit(e)
+            return []

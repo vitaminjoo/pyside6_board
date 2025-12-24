@@ -1,6 +1,6 @@
 from PySide6.QtCore import Signal, QModelIndex
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPushButton, QAbstractItemView, \
-    QHeaderView, QMessageBox
+    QHeaderView, QMessageBox, QLineEdit
 
 from app.models import Post
 from app.views import PostTableModel
@@ -9,11 +9,11 @@ from app.views import PostTableModel
 class PostListPage(QWidget):
     request_post_signal = Signal()
     request_read_signal = Signal(object)
+    request_search_signal = Signal(str)
 
     def __init__(self, view_model):
         super().__init__()
         self.view_model = view_model
-        # 읽기 전용이니까 tuple도 괜찮지 않을까?
         self.current_posts = []
         self.init_ui()
         self.init_signals()
@@ -21,6 +21,17 @@ class PostListPage(QWidget):
     def init_ui(self):
         # TODO: UX 고려해서 버튼 배치하기
         layout = QVBoxLayout()
+
+        search_layout = QHBoxLayout()
+        self.input_search = QLineEdit()
+        self.input_search.returnPressed.connect(lambda: self.search_by_keyword(self.input_search.text()))
+        self.btn_search = QPushButton("Search")
+        search_layout.addStretch()
+        search_layout.addWidget(self.input_search)
+        search_layout.addWidget(self.btn_search)
+
+        layout.addLayout(search_layout)
+
         self.table = QTableView()
 
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -68,12 +79,13 @@ class PostListPage(QWidget):
         self.view_model.post_list_updated.connect(self.update_table)
         self.view_model.paging_info_updated.connect(self.update_paging_ui)
         self.table.doubleClicked.connect(self.on_double_click)
-        self.btn_prev_jump.clicked.connect(lambda: self.view_model.go_prev_page(10))
-        self.btn_prev.clicked.connect(lambda: self.view_model.go_prev_page(1))
-        self.btn_next_jump.clicked.connect(lambda: self.view_model.go_next_page(10))
-        self.btn_next.clicked.connect(lambda: self.view_model.go_next_page(1))
+        self.btn_prev_jump.clicked.connect(lambda checked: self.view_model.go_prev_page(10))
+        self.btn_prev.clicked.connect(lambda checked: self.view_model.go_prev_page(1))
+        self.btn_next_jump.clicked.connect(lambda checked: self.view_model.go_next_page(10))
+        self.btn_next.clicked.connect(lambda checked: self.view_model.go_next_page(1))
         self.btn_post.clicked.connect(self.request_post_signal.emit)
         self.btn_remove.clicked.connect(self.delete_selected_posts)
+        self.btn_search.clicked.connect(lambda checked: self.search_by_keyword(self.input_search.text()))
 
     def update_table(self, posts: list[Post]):
         self.current_posts = posts
@@ -150,3 +162,6 @@ class PostListPage(QWidget):
         self.btn_prev.setEnabled(current > 1)
         self.btn_next_jump.setEnabled(current < total)
         self.btn_next.setEnabled(current < total)
+
+    def search_by_keyword(self, keyword):
+        self.view_model.search_posts(keyword)

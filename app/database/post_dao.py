@@ -101,3 +101,56 @@ class PostDao:
             cursor.execute(sql)
             count = cursor.fetchone()[0]
             return count if count else 0
+
+    def search_post(self, keyword: str):
+        with db.get_cursor() as cursor:
+            sql = "SELECT * FROM posts WHERE title LIKE ? OR content LIKE ?"
+            cursor.execute(sql, ('%' + keyword + '%', '%' + keyword + '%'))
+            rows = cursor.fetchall()
+        posts_obj = []
+        for row in rows:
+            post = Post(
+                id=row['id'],
+                title=row['title'],
+                content=row['content'],
+                author=row['author'],
+                created_at=row['created_at'],
+                updated_at=row['updated_at']
+            )
+            posts_obj.append(post)
+        return posts_obj
+
+    def get_search_count(self, keyword: str) -> int:
+        with db.get_cursor() as cursor:
+            sql = "SELECT COUNT(*) FROM posts WHERE title LIKE ? OR content LIKE ?"
+            param = f"%{keyword}%"
+            cursor.execute(sql, (param, param))
+            result = cursor.fetchone()
+            return result[0] if result else 0
+
+    def get_search_posts_paginated(self, keyword: str, page: int, limit: int) -> list[Post]:
+        offset = (page - 1) * limit
+        with db.get_cursor() as cursor:
+            sql = """
+                  SELECT *
+                  FROM posts
+                  WHERE title LIKE ?
+                     OR content LIKE ?
+                  ORDER BY created_at DESC LIMIT ?
+                  OFFSET ? \
+                  """
+            param = f"%{keyword}%"
+            cursor.execute(sql, (param, param, limit, offset))
+            rows = cursor.fetchall()
+            posts_obj = []
+            for row in rows:
+                post = Post(
+                    id=row['id'],
+                    title=row['title'],
+                    content=row['content'],
+                    author=row['author'],
+                    created_at=row['created_at'],
+                    updated_at=row['updated_at']
+                )
+                posts_obj.append(post)
+            return posts_obj
