@@ -1,8 +1,8 @@
 from app.database import db
 from app.database.post_dao import PostDao
 
-def run_test():
 
+def run_test():
     db.init_db()
     dao = PostDao()
     print("====== TEST ======")
@@ -37,6 +37,7 @@ def run_test():
         print(f" -> 삭제 후 남은 글 개수: {len(final_list)}")
 
     print("\n 테스트 종료 ")
+
 
 if __name__ == '__main__':
     run_test()

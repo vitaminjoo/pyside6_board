@@ -1,27 +1,27 @@
 import os
 import sqlite3
+import sys
 from contextlib import contextmanager
 
 DB_FILE = "board.db"
 
 
 class DatabaseManager:
-    """
-    데이터베이스 연결 및 초기화를 담당하는 클래스입니다.
-    SQLite 데이터베이스 파일과의 연결을 관리합니다.
-    """
-
-    def __init__(self, db_file: str = "board.db"):
+    def __init__(self, db_file: str = DB_FILE):
         """
-        DatabaseManager 초기화 메서드입니다.
         DB 파일의 경로를 설정합니다.
-
-        Args:
-            db_file (str): 데이터베이스 파일 이름 (기본값: "board.db")
         """
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(base_dir)
-        self.db_path = os.path.join(project_root, db_file)
+        if getattr(sys, 'frozen', False):
+            # 배포 환경 -> .exe 파일이 있는 폴더 기준 : (PyInstaller로 빌드 시 sys.executable은 exe 파일 경로임)
+            base_dir = os.path.dirname(sys.executable)
+        else:
+            # 개발 환경 -> 현재 파일(database.py)의 위치를 기준으로 프로젝트 루트 찾기
+            current_file_path = os.path.abspath(__file__)
+            db_dir = os.path.dirname(current_file_path)
+            app_dir = os.path.dirname(db_dir)
+            base_dir = os.path.dirname(app_dir)
+
+        self.db_path = os.path.join(base_dir, db_file)
 
     def get_connection(self) -> sqlite3.Connection:
         """
