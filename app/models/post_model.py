@@ -3,6 +3,9 @@ from dataclasses import dataclass
 
 @dataclass
 class Post:
+    """
+    게시글 데이터를 담는 데이터 클래스입니다.
+    """
     title: str
     content: str
     author: str = "anonymous"
@@ -13,7 +16,11 @@ class Post:
     @staticmethod
     def create_table(conn):
         """
-        posts 테이블 생성
+        데이터베이스에 posts 테이블을 생성합니다.
+        이미 존재하는 경우 생성하지 않습니다.
+
+        Args:
+            conn: 데이터베이스 연결 객체
         """
         cursor = conn.cursor()
         cursor.execute('''
