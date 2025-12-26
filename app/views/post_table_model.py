@@ -1,3 +1,4 @@
+import re
 from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex
 
 
@@ -52,7 +53,19 @@ class PostTableModel(QAbstractTableModel):
             if col == 2:
                 return post.author
             if col == 3:
-                return post.updated_at or post.created_at
+                target_date = post.updated_at or post.created_at
+                date_str = str(target_date)
+                match = re.match(r"^(\d{4}-\d{2}-\d{2})", date_str)
+
+                if match:
+                    return match.group(1)  # "2025-12-26" 반환
+                else:
+                    return date_str  # 실패시 원본 반환
+
+
+        if role == Qt.TextAlignmentRole:
+            if index.column() != 1 :
+                return Qt.AlignCenter
 
         return None
 

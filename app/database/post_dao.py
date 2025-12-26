@@ -22,30 +22,6 @@ class PostDao:
             sql = "INSERT INTO posts (title, content, author) VALUES (?, ?, ?)"
             cursor.execute(sql, (new_post.title, new_post.content, new_post.author))
 
-    def get_all_posts(self) -> list[Post]:
-        """
-        모든 게시글을 작성일 역순(최신순)으로 조회합니다.
-
-        Returns:
-            list[Post]: 모든 게시글 객체의 리스트
-        """
-        with db.get_cursor() as cursor:
-            sql = "SELECT * FROM posts ORDER BY created_at DESC"
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-
-        posts_obj = []
-        for row in rows:
-            post = Post(
-                id=row['id'],
-                title=row['title'],
-                content=row['content'],
-                author=row['author'],
-                created_at=row['created_at'],
-                updated_at=row['updated_at']
-            )
-            posts_obj.append(post)
-        return posts_obj
 
     def get_post(self, id: int) -> Optional[Post]:
         """

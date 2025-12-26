@@ -33,7 +33,39 @@ class PostListPage(QWidget):
         UI 컴포넌트들을 초기화하고 레이아웃을 구성합니다.
         검색창, 테이블 뷰, 페이징 버튼, 기능 버튼(추가/삭제)을 배치합니다.
         """
+        self.setStyleSheet("""
+                    QWidget {
+                        font-family: 'Malgun Gothic';
+                        font-size: 14px;
+                    }
+
+                    QTableView {
+                        outline: 0;
+                    }
+
+                    QTableView::item:focus {
+                        border: none;
+                        outline: none;
+                    }
+
+                    QTableView::item:selected {
+                        background-color: #5f6369;
+                        border: none;
+                    }
+                """)
+
         layout = QVBoxLayout()
+
+        nav_layout = QHBoxLayout()
+
+        # 하단 기능 버튼 (작성, 삭제)
+        btn_layout = QHBoxLayout()
+        btn_layout.setSpacing(10)
+        self.btn_post = QPushButton("Post")
+        self.btn_remove = QPushButton("Delete")
+        btn_layout.addWidget(self.btn_post)
+        btn_layout.addWidget(self.btn_remove)
+        nav_layout.addLayout(btn_layout)
 
         # 검색 영역
         search_layout = QHBoxLayout()
@@ -44,16 +76,16 @@ class PostListPage(QWidget):
         search_layout.addWidget(self.input_search)
         search_layout.addWidget(self.btn_search)
 
-        layout.addLayout(search_layout)
+        nav_layout.addLayout(search_layout)
+        layout.addLayout(nav_layout)
 
         # 게시글 목록 테이블
         self.table = QTableView()
 
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table.setSelectionMode(QAbstractItemView.ExtendedSelection)
-
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table.verticalHeader().setVisible(False)
         layout.addWidget(self.table)
 
         # 페이징 영역
@@ -79,17 +111,7 @@ class PostListPage(QWidget):
         pagination_layout.addWidget(self.btn_next_jump)
         pagination_layout.addStretch()  # 오른쪽 여백 밀기 (가운데 정렬됨)
 
-        # 하단 기능 버튼 (작성, 삭제)
-        btn_layout = QHBoxLayout()
-        btn_layout.setSpacing(10)
-        self.btn_post = QPushButton("Post")
-        self.btn_remove = QPushButton("Remove")
-        btn_layout.addStretch()
-        btn_layout.addWidget(self.btn_post)
-        btn_layout.addWidget(self.btn_remove)
-
         layout.addLayout(pagination_layout)
-        layout.addLayout(btn_layout)
         self.setLayout(layout)
 
     def init_signals(self):
@@ -125,6 +147,19 @@ class PostListPage(QWidget):
         self.current_posts = posts
         self.model = PostTableModel(posts)
         self.table.setModel(self.model)
+
+        header = self.table.horizontalHeader()
+
+        header.setSectionResizeMode(0, QHeaderView.Interactive)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.Interactive)
+        header.setSectionResizeMode(3, QHeaderView.Interactive)
+
+        self.table.setColumnWidth(0, 50)
+        self.table.setColumnWidth(2, 100)
+        self.table.setColumnWidth(3, 150)
+
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
 
     def on_double_click(self, index: QModelIndex):
         """

@@ -1,5 +1,5 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QLineEdit
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QLineEdit, QStyle
 
 
 class PostEditorPage(QWidget):
@@ -30,8 +30,9 @@ class PostEditorPage(QWidget):
 
         # 목록으로 돌아가기 버튼
         btn_to_list_layout = QHBoxLayout()
-        self.btn_go_list = QPushButton("List")
+        self.btn_go_list = QPushButton("< List")
         btn_to_list_layout.addWidget(self.btn_go_list)
+        btn_to_list_layout.addStretch()
         layout.addLayout(btn_to_list_layout)
 
         # 제목 입력
@@ -108,13 +109,13 @@ class PostEditorPage(QWidget):
             self.view_model.message_signal.emit("Please enter title and content")
             return
 
-        isPass = False
+        is_pass = False
         if id:
-            isPass = self.view_model.update_post(id, title, content, author)
+            is_pass = self.view_model.update_post(id, title, content, author)
         else:
-            isPass = self.view_model.add_post(title, content, author)
+            is_pass = self.view_model.add_post(title, content, author)
 
-        if isPass:
+        if is_pass:
             self.request_go_list.emit()
 
     def back_to_post(self):

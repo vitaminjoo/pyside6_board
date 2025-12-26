@@ -196,7 +196,6 @@ class PostViewModel(QObject):
         try:
             self.post_dao.delete_posts(ids)
             self.fetch_posts()
-            self.message_signal.emit(f"Posts Deleted. : {len(ids)} ")
             return True
         except Exception as e:
             self.error_message_signal.emit(str(e))
@@ -209,7 +208,7 @@ class PostViewModel(QObject):
         Args:
             keyword (str): 검색어
 
-        Returns:
+        Returns:9
             list[Post] | None: 검색 결과 리스트 (실제 반환값은 fetch_posts를 통해 시그널로 전달됨)
         """
         try:

@@ -30,15 +30,26 @@ class PostDetailPage(QWidget):
         UI 컴포넌트들을 초기화하고 레이아웃을 구성합니다.
         제목, 작성자/날짜 정보, 본문 내용, 기능 버튼(목록, 수정, 삭제)을 배치합니다.
         """
-        # TODO: UX 고려해서 재배치 필요
         layout = QVBoxLayout()
 
-        # 목록으로 돌아가기 버튼
+        # 상단 기능 버튼 (목록, 수정, 삭제)
+        nav_layout = QHBoxLayout()
+
         btn_to_list_layout = QHBoxLayout()
         self.btn_go_list = QPushButton("List")
         btn_to_list_layout.addWidget(self.btn_go_list)
-        btn_to_list_layout.addStretch()
-        layout.addLayout(btn_to_list_layout)
+        nav_layout.addLayout(btn_to_list_layout)
+        nav_layout.addStretch()
+
+        btn_func_layout = QHBoxLayout()
+        self.btn_edit = QPushButton("Edit")
+        self.btn_delete = QPushButton("Delete")
+
+        btn_func_layout.addWidget(self.btn_edit)
+        btn_func_layout.addWidget(self.btn_delete)
+
+        nav_layout.addLayout(btn_func_layout)
+        layout.addLayout(nav_layout)
 
         # 제목 표시
         self.lable_title = QLabel("Subject")
@@ -46,22 +57,23 @@ class PostDetailPage(QWidget):
         layout.addWidget(self.lable_title)
 
         # 작성자 및 날짜 정보 표시
-        self.label_info = QLabel("Author | Date")
-        layout.addWidget(self.label_info)
+        info_layout = QVBoxLayout()
+
+        author_layout = QHBoxLayout()
+        self.label_author_info = QLabel("")
+        self.label_date_info = QLabel("")
+        author_layout.addStretch()
+        author_layout.addWidget(self.label_author_info)
+        author_layout.addWidget(self.label_date_info)
+
+        info_layout.addLayout(author_layout)
+
+        layout.addLayout(info_layout)
 
         # 본문 내용 표시 (읽기 전용)
         self.text_content = QTextBrowser()
         layout.addWidget(self.text_content)
 
-        # 하단 기능 버튼 (수정, 삭제)
-        btn_layout = QHBoxLayout()
-        self.btn_edit = QPushButton("Edit")
-        self.btn_delete = QPushButton("Delete")
-
-        btn_layout.addWidget(self.btn_edit)
-        btn_layout.addWidget(self.btn_delete)
-
-        layout.addLayout(btn_layout)
         self.setLayout(layout)
 
         # 시그널 연결
@@ -80,8 +92,9 @@ class PostDetailPage(QWidget):
 
         self.lable_title.setText(post.title)
         date_str = post.updated_at if post.updated_at else post.created_at
-        info_text = f"author: {post.author} | date: {date_str}"
-        self.label_info.setText(info_text)
+
+        self.label_author_info.setText(post.author)
+        self.label_date_info.setText(date_str)
 
         self.text_content.setText(post.content)
 
