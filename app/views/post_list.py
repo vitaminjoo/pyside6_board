@@ -156,42 +156,6 @@ class PostListPage(QWidget):
 
         self.btn_delete.setEnabled(False)
 
-    def on_double_click(self, index: QModelIndex):
-        """
-        테이블의 행을 더블 클릭했을 때 상세 페이지로 이동 요청을 보냅니다.
-
-        Args:
-            index (QModelIndex): 클릭된 셀의 인덱스
-        """
-        row = index.row()
-        if row < len(self.current_posts):
-            selected_post = self.current_posts[row]
-            self.request_read_signal.emit(selected_post)
-
-    def delete_selected_posts(self):
-        """
-        선택된 게시글들을 삭제합니다. 삭제 전 확인 대화상자를 띄웁니다.
-        """
-        selected_indexes = self.table.selectionModel().selectedRows()
-
-        if not selected_indexes:
-            return
-
-        msg = f"Are you sure you want to delete {len(selected_indexes)} posts?"
-        reply = QMessageBox.question(self, "Delete Confirm", msg, QMessageBox.Yes, QMessageBox.No)
-
-        if reply == QMessageBox.No:
-            return
-
-        ids_to_delete = []
-        for index in selected_indexes:
-            row = index.row()
-            if row < len(self.current_posts):
-                ids_to_delete.append(self.current_posts[row].id)
-
-        if ids_to_delete:
-            self.view_model.delete_posts(ids_to_delete)
-
     def update_paging_ui(self, current, total):
         """
         현재 페이지와 전체 페이지 수에 따라 페이징 버튼 UI를 갱신합니다.
@@ -237,6 +201,30 @@ class PostListPage(QWidget):
         self.btn_next_jump.setEnabled(current < total)
         self.btn_next.setEnabled(current < total)
 
+    def delete_selected_posts(self):
+        """
+        선택된 게시글들을 삭제합니다. 삭제 전 확인 대화상자를 띄웁니다.
+        """
+        selected_indexes = self.table.selectionModel().selectedRows()
+
+        if not selected_indexes:
+            return
+
+        msg = f"Are you sure you want to delete {len(selected_indexes)} posts?"
+        reply = QMessageBox.question(self, "Delete Confirm", msg, QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.No:
+            return
+
+        ids_to_delete = []
+        for index in selected_indexes:
+            row = index.row()
+            if row < len(self.current_posts):
+                ids_to_delete.append(self.current_posts[row].id)
+
+        if ids_to_delete:
+            self.view_model.delete_posts(ids_to_delete)
+
     def search_by_keyword(self, keyword):
         """
         입력된 키워드로 게시글 검색을 요청합니다.
@@ -245,6 +233,18 @@ class PostListPage(QWidget):
             keyword (str): 검색어
         """
         self.view_model.search_posts(keyword)
+
+    def on_double_click(self, index: QModelIndex):
+        """
+        테이블의 행을 더블 클릭했을 때 상세 페이지로 이동 요청을 보냅니다.
+
+        Args:
+            index (QModelIndex): 클릭된 셀의 인덱스
+        """
+        row = index.row()
+        if row < len(self.current_posts):
+            selected_post = self.current_posts[row]
+            self.request_read_signal.emit(selected_post)
 
     def on_selection_changed(self, selected, deselected):
         has_selection = self.table.selectionModel().hasSelection()

@@ -135,7 +135,7 @@ class PostViewModel(QObject):
             post = Post(title=title, content=content, author=author)
             self.post_dao.insert_post(post)
             self.message_signal.emit("Post Added.")
-            self.fetch_posts()
+            self.reset_keyword_and_fetch()
             return True
         except Exception as e:
             self.error_message_signal.emit(str(e))
@@ -159,7 +159,7 @@ class PostViewModel(QObject):
             updated_post = Post(id=id, title=title, content=content, author=author)
             self.post_dao.update_post(updated_post)
             self.message_signal.emit("Post Updated.")
-            self.fetch_posts()
+            self.reset_keyword_and_fetch()
             return True
         except Exception as e:
             self.error_message_signal.emit(str(e))
@@ -177,7 +177,7 @@ class PostViewModel(QObject):
         """
         try:
             self.post_dao.delete_post(id)
-            self.fetch_posts()
+            self.reset_keyword_and_fetch()
             return True
         except Exception as e:
             self.error_message_signal.emit(str(e))
@@ -195,7 +195,7 @@ class PostViewModel(QObject):
         """
         try:
             self.post_dao.delete_posts(ids)
-            self.fetch_posts()
+            self.reset_keyword_and_fetch()
             return True
         except Exception as e:
             self.error_message_signal.emit(str(e))
@@ -218,3 +218,8 @@ class PostViewModel(QObject):
         except Exception as e:
             self.error_message_signal.emit(str(e))
             return []
+
+    def reset_and_fetch(self):
+        self.current_keyword = ""
+        self.current_page = 1
+        self.fetch_posts()
