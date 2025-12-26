@@ -1,7 +1,8 @@
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTextBrowser, QMessageBox
 
 from app.models import Post
+from app.utils import IconManager
 
 
 class PostDetailPage(QWidget):
@@ -25,6 +26,28 @@ class PostDetailPage(QWidget):
         self.current_post = None
         self.init_ui()
 
+        self.setStyleSheet("""
+            QWidget {
+                font-family: 'Malgun Gothic';
+                font-size: 14px;
+            }
+            
+            /* 입력창 스타일 (제목, 내용) */
+            QLineEdit, QTextEdit {
+                padding: 10px;
+            }
+            
+            QLabel#lable_subject {
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            
+            QPushButton#btn_delete {
+                color: #b5334b;
+            }
+        """)
+
     def init_ui(self):
         """
         UI 컴포넌트들을 초기화하고 레이아웃을 구성합니다.
@@ -43,7 +66,10 @@ class PostDetailPage(QWidget):
 
         btn_func_layout = QHBoxLayout()
         self.btn_edit = QPushButton("Edit")
-        self.btn_delete = QPushButton("Delete")
+        self.btn_delete = QPushButton()
+        self.btn_delete.setIcon(IconManager.get("delete"))
+        self.btn_delete.setIconSize(QSize(20, 20))
+        self.btn_delete.setObjectName("btn_delete")
 
         btn_func_layout.addWidget(self.btn_edit)
         btn_func_layout.addWidget(self.btn_delete)
@@ -53,7 +79,9 @@ class PostDetailPage(QWidget):
 
         # 제목 표시
         self.lable_title = QLabel("Subject")
+        self.lable_title.setObjectName("lable_subject")
         self.lable_title.setWordWrap(True)
+
         layout.addWidget(self.lable_title)
 
         # 작성자 및 날짜 정보 표시

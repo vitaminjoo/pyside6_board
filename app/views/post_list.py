@@ -1,8 +1,9 @@
-from PySide6.QtCore import Signal, QModelIndex
+from PySide6.QtCore import Signal, QModelIndex, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPushButton, QAbstractItemView, \
     QHeaderView, QMessageBox, QLineEdit
 
 from app.models import Post
+from app.utils import IconManager
 from app.views import PostTableModel
 
 
@@ -52,29 +53,64 @@ class PostListPage(QWidget):
                         background-color: #5f6369;
                         border: none;
                     }
+                    
+                    QPushButton#btn_post {
+                        min-width: 60px;        
+                        padding: 4px 8px;     
+                        
+                        background-color: #3498db;
+                        color: white;
+                        
+                        font-weight: bold;      
+                        font-size: 14px;       
+                        border-radius: 5px;  
+                        border: 1px solid #2980b9;
+                    }
+                    
+                    QPushButton#btn_post:hover {
+                        background-color: #2980b9;
+                    }
+                    
+                    QPushButton#btn_delete{
+                        color: white;
+                    }
+                    
+                    QPushButton#btn_delete::disabled {
+                        color: #4d4d4f;
+                        background-color: #1b1b1c
+                    }
+                    
                 """)
 
         layout = QVBoxLayout()
 
+        # 상단 레이아웃
         nav_layout = QHBoxLayout()
 
-        # 하단 기능 버튼 (작성, 삭제)
+        # 상단 기능(Post)버튼
         btn_layout = QHBoxLayout()
         btn_layout.setSpacing(10)
         self.btn_post = QPushButton("Post")
-        self.btn_remove = QPushButton("Delete")
+        self.btn_post.setObjectName("btn_post")
+
         btn_layout.addWidget(self.btn_post)
-        btn_layout.addWidget(self.btn_remove)
         nav_layout.addLayout(btn_layout)
 
-        # 검색 영역
+        # 상단 검색 영역 / 삭제 버튼
         search_layout = QHBoxLayout()
         self.input_search = QLineEdit()
         self.input_search.returnPressed.connect(lambda: self.search_by_keyword(self.input_search.text()))
         self.btn_search = QPushButton("Search")
+
+        self.btn_delete = QPushButton()
+        self.btn_delete.setObjectName("btn_delete")
+        self.btn_delete.setEnabled(False)
+        self.btn_delete.setIcon(IconManager.get("delete"))
+        self.btn_delete.setIconSize(QSize(20, 20))
         search_layout.addStretch()
         search_layout.addWidget(self.input_search)
         search_layout.addWidget(self.btn_search)
+        search_layout.addWidget(self.btn_delete)
 
         nav_layout.addLayout(search_layout)
         layout.addLayout(nav_layout)
@@ -134,7 +170,7 @@ class PostListPage(QWidget):
 
         # 작성, 삭제, 검색 기능 event 연결
         self.btn_post.clicked.connect(self.request_post_signal.emit)
-        self.btn_remove.clicked.connect(self.delete_selected_posts)
+        self.btn_delete.clicked.connect(self.delete_selected_posts)
         self.btn_search.clicked.connect(lambda checked: self.search_by_keyword(self.input_search.text()))
 
     def update_table(self, posts: list[Post]):
@@ -160,6 +196,11 @@ class PostListPage(QWidget):
         self.table.setColumnWidth(3, 150)
 
         header.setSectionResizeMode(1, QHeaderView.Stretch)
+
+        selection_model = self.table.selectionModel()
+        selection_model.selectionChanged.connect(self.on_selection_changed)
+
+        self.btn_delete.setEnabled(False)
 
     def on_double_click(self, index: QModelIndex):
         """
@@ -250,3 +291,7 @@ class PostListPage(QWidget):
             keyword (str): 검색어
         """
         self.view_model.search_posts(keyword)
+
+    def on_selection_changed(self, selected, deselected):
+        has_selection = self.table.selectionModel().hasSelection()
+        self.btn_delete.setEnabled(has_selection)

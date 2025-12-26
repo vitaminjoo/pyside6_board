@@ -1,4 +1,5 @@
 import re
+
 from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex
 
 
@@ -6,6 +7,7 @@ class PostTableModel(QAbstractTableModel):
     """
     게시글 목록을 QTableView에 표시하기 위한 데이터 모델입니다.
     """
+
     def __init__(self, posts=None):
         """
         PostTableModel 초기화 메서드입니다.
@@ -46,15 +48,20 @@ class PostTableModel(QAbstractTableModel):
         if role == Qt.DisplayRole:
             post = self.posts[index.row()]
             col = index.column()
+            # 0 번째 컬럼: 글 번호(id)
             if col == 0:
                 return str(post.id)
+            # 1 번째 컬럼: 제목
             if col == 1:
                 return post.title
+            # 2 번째 컬럼: 작성자
             if col == 2:
                 return post.author
+            # 3 번째 컬럼: 날짜(연, 월, 일)
             if col == 3:
                 target_date = post.updated_at or post.created_at
                 date_str = str(target_date)
+                # 연, 월, 일만 표현하도록 정규식 적용
                 match = re.match(r"^(\d{4}-\d{2}-\d{2})", date_str)
 
                 if match:
@@ -62,9 +69,8 @@ class PostTableModel(QAbstractTableModel):
                 else:
                     return date_str  # 실패시 원본 반환
 
-
         if role == Qt.TextAlignmentRole:
-            if index.column() != 1 :
+            if index.column() != 1:
                 return Qt.AlignCenter
 
         return None

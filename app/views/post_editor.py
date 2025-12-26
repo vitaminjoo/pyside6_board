@@ -1,5 +1,5 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QLineEdit, QStyle
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QLineEdit
 
 
 class PostEditorPage(QWidget):
@@ -21,6 +21,21 @@ class PostEditorPage(QWidget):
         self.current_post_id = None
         self.init_ui()
 
+        self.setStyleSheet("""
+            QWidget {
+                font-family: 'Malgun Gothic';
+                font-size: 14px;
+            }
+
+            QLineEdit, QTextEdit {
+                padding: 10px;
+            }
+            
+            QLabel {
+                font-weight: bold;
+            }
+        """)
+
     def init_ui(self):
         """
         UI 컴포넌트들을 초기화하고 레이아웃을 구성합니다.
@@ -28,12 +43,24 @@ class PostEditorPage(QWidget):
         """
         layout = QVBoxLayout()
 
-        # 목록으로 돌아가기 버튼
+        # 상단 기능 버튼 (목록, 저장/취소)
+        nav_layout = QHBoxLayout()
+
         btn_to_list_layout = QHBoxLayout()
-        self.btn_go_list = QPushButton("< List")
+        self.btn_go_list = QPushButton("List")
+        self.btn_back = QPushButton("Back")
+
         btn_to_list_layout.addWidget(self.btn_go_list)
+        btn_to_list_layout.addWidget(self.btn_back)
         btn_to_list_layout.addStretch()
-        layout.addLayout(btn_to_list_layout)
+        nav_layout.addLayout(btn_to_list_layout)
+
+        btn_layout = QHBoxLayout()
+        self.btn_save = QPushButton("Post")
+        btn_layout.addWidget(self.btn_save)
+        nav_layout.addLayout(btn_layout)
+
+        layout.addLayout(nav_layout)
 
         # 제목 입력
         self.lable_title = QLabel("Subject")
@@ -54,15 +81,6 @@ class PostEditorPage(QWidget):
         self.input_content.setPlaceholderText("Please enter your content")
         self.input_content.setTabChangesFocus(True)
         layout.addWidget(self.input_content)
-
-        # 하단 기능 버튼 (뒤로가기, 저장)
-        btn_layout = QHBoxLayout()
-        self.btn_back = QPushButton("Back")
-        self.btn_save = QPushButton("Post")
-
-        btn_layout.addWidget(self.btn_back)
-        btn_layout.addWidget(self.btn_save)
-        layout.addLayout(btn_layout)
 
         self.setLayout(layout)
 
