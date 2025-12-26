@@ -30,7 +30,7 @@ project_dde/
 │   ├── viewmodels/  # 비즈니스 로직 및 뷰 상태 관리
 │   └── views/       # UI 화면 (List, Detail, Editor)
 ├── dist/
-│   ├── DDE_Board.exe # 애플리케이션 빌드 파일
+│   ├── DDE_Board.exe # Window용 애플리케이션 실행 파일
 ├── main.py          # 애플리케이션 진입점
 ├── README.md        # 프로젝트 설명 문서
 ├── requirements.txt # 외부 라이브러리 설치를 위한 파일
@@ -56,6 +56,9 @@ project_dde/
 3.  **애플리케이션 실행**
     ```bash
     python main.py
+    ```
+    ```bash
+    /dist/DDE_Board.exe 실행
     ```
 
 4.  **실행 파일 빌드 (선택 사항)**
