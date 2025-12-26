@@ -37,10 +37,10 @@ class PostEditorPage(QWidget):
 
         btn_to_list_layout = QHBoxLayout()
         self.btn_go_list = QPushButton("List")
-        self.btn_back = QPushButton("Back")
+        self.btn_cancel = QPushButton("Cancel")
 
         btn_to_list_layout.addWidget(self.btn_go_list)
-        btn_to_list_layout.addWidget(self.btn_back)
+        btn_to_list_layout.addWidget(self.btn_cancel)
         btn_to_list_layout.addStretch()
         nav_layout.addLayout(btn_to_list_layout)
 
@@ -77,7 +77,7 @@ class PostEditorPage(QWidget):
         # 시그널 연결
         self.btn_save.clicked.connect(self.save_post)
         self.btn_go_list.clicked.connect(self.request_go_list.emit)
-        self.btn_back.clicked.connect(self.back_to_post)
+        self.btn_cancel.clicked.connect(self.back_to_post)
 
     def set_data(self, post=None):
         """
@@ -92,7 +92,8 @@ class PostEditorPage(QWidget):
             self.input_author.setText(post.author)
             self.input_content.setText(post.content)
 
-            self.btn_back.setVisible(True)
+            self.input_author.setDisabled(True)
+            self.btn_cancel.setVisible(True)
             self.btn_save.setText("Save")
         else:
             self.current_post_id = None
@@ -100,7 +101,8 @@ class PostEditorPage(QWidget):
             self.input_author.clear()
             self.input_content.clear()
 
-            self.btn_back.setVisible(False)
+            self.input_author.setDisabled(False)
+            self.btn_cancel.setVisible(False)
             self.btn_save.setText("Post")
 
     def save_post(self):
