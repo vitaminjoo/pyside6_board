@@ -26,7 +26,7 @@ project_dde/
 ├── app/
 │   ├── database/    # DB 연결 및 DAO (Data Access Object)
 │   ├── models/      # 데이터 모델 (Post)
-│   ├── utils/       # 유틸 모듈 (Icon Manager)
+│   ├── utils/       # 유틸 모듈 (Icon Manager, Style 적용)
 │   ├── viewmodels/  # 비즈니스 로직 및 뷰 상태 관리
 │   └── views/       # UI 화면 (List, Detail, Editor)
 ├── dist/
