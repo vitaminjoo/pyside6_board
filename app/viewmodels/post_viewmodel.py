@@ -72,7 +72,6 @@ class PostViewModel(QObject):
         Args:
             step (int): 이동할 페이지 수 (기본값 1)
         """
-        print(step)
         if self.current_page > 1:
             if self.current_page - step < 0:
                 self.current_page = 1
