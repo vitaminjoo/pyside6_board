@@ -2,7 +2,7 @@ from PySide6.QtCore import Signal, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTextBrowser, QMessageBox
 
 from app.models import Post
-from app.utils import IconManager
+from app.utils import IconManager, DETAIL_STYLE
 
 
 class PostDetailPage(QWidget):
@@ -26,27 +26,7 @@ class PostDetailPage(QWidget):
         self.current_post = None
         self.init_ui()
 
-        self.setStyleSheet("""
-            QWidget {
-                font-family: 'Malgun Gothic';
-                font-size: 14px;
-            }
-            
-            /* 입력창 스타일 (제목, 내용) */
-            QLineEdit, QTextEdit {
-                padding: 10px;
-            }
-            
-            QLabel#lable_subject {
-                font-size: 20px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-            
-            QPushButton#btn_delete {
-                color: #b5334b;
-            }
-        """)
+        self.setStyleSheet(DETAIL_STYLE)
 
     def init_ui(self):
         """

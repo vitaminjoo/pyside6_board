@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableView, QPu
     QHeaderView, QMessageBox, QLineEdit
 
 from app.models import Post
-from app.utils import IconManager
+from app.utils import IconManager, LIST_STYLE
 from app.views import PostTableModel
 
 
@@ -34,53 +34,7 @@ class PostListPage(QWidget):
         UI 컴포넌트들을 초기화하고 레이아웃을 구성합니다.
         검색창, 테이블 뷰, 페이징 버튼, 기능 버튼(추가/삭제)을 배치합니다.
         """
-        self.setStyleSheet("""
-                    QWidget {
-                        font-family: 'Malgun Gothic';
-                        font-size: 14px;
-                    }
-
-                    QTableView {
-                        outline: 0;
-                    }
-
-                    QTableView::item:focus {
-                        border: none;
-                        outline: none;
-                    }
-
-                    QTableView::item:selected {
-                        background-color: #5f6369;
-                        border: none;
-                    }
-                    
-                    QPushButton#btn_post {
-                        min-width: 60px;        
-                        padding: 4px 8px;     
-                        
-                        background-color: #3498db;
-                        color: white;
-                        
-                        font-weight: bold;      
-                        font-size: 14px;       
-                        border-radius: 5px;  
-                        border: 1px solid #2980b9;
-                    }
-                    
-                    QPushButton#btn_post:hover {
-                        background-color: #2980b9;
-                    }
-                    
-                    QPushButton#btn_delete{
-                        color: white;
-                    }
-                    
-                    QPushButton#btn_delete::disabled {
-                        color: #4d4d4f;
-                        background-color: #1b1b1c
-                    }
-                    
-                """)
+        self.setStyleSheet(LIST_STYLE)
 
         layout = QVBoxLayout()
 

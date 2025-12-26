@@ -1,6 +1,8 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTextEdit, QHBoxLayout, QPushButton, QLineEdit
 
+from app.utils import EDITOR_STYLE
+
 
 class PostEditorPage(QWidget):
     """
@@ -21,20 +23,7 @@ class PostEditorPage(QWidget):
         self.current_post_id = None
         self.init_ui()
 
-        self.setStyleSheet("""
-            QWidget {
-                font-family: 'Malgun Gothic';
-                font-size: 14px;
-            }
-
-            QLineEdit, QTextEdit {
-                padding: 10px;
-            }
-            
-            QLabel {
-                font-weight: bold;
-            }
-        """)
+        self.setStyleSheet(EDITOR_STYLE)
 
     def init_ui(self):
         """
@@ -57,6 +46,7 @@ class PostEditorPage(QWidget):
 
         btn_layout = QHBoxLayout()
         self.btn_save = QPushButton("Post")
+        self.btn_save.setObjectName("btn_post")
         btn_layout.addWidget(self.btn_save)
         nav_layout.addLayout(btn_layout)
 
