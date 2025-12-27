@@ -14,6 +14,8 @@ class PostViewModel(QObject):
     """
     # 게시글 목록이 업데이트되었을 때 발생하는 시그널 (게시글 리스트 전달)
     post_list_updated = Signal(list)
+    # 게시글 목록 초기화시 발생하는 시그널(검색창 초기화)
+    post_list_updated_initialized = Signal()
     # 페이징 정보가 업데이트되었을 때 발생하는 시그널 (현재 페이지, 전체 페이지 수 전달)
     paging_info_updated = Signal(int, int)
     # 에러 메시지가 발생했을 때 전달하는 시그널
@@ -53,6 +55,7 @@ class PostViewModel(QObject):
                 posts = self.post_dao.get_posts_paginated(
                     self.current_page, self.items_per_page
                 )
+                self.post_list_updated_initialized.emit()
 
             if self.total_count == 0:
                 self.total_pages = 1
@@ -73,7 +76,7 @@ class PostViewModel(QObject):
             step (int): 이동할 페이지 수 (기본값 1)
         """
         if self.current_page > 1:
-            if self.current_page - step < 0:
+            if self.current_page - step < 1:
                 self.current_page = 1
             else:
                 self.current_page -= step

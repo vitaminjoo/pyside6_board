@@ -112,6 +112,7 @@ class PostListPage(QWidget):
         # ViewModel event 연결
         self.view_model.post_list_updated.connect(self.update_table)
         self.view_model.paging_info_updated.connect(self.update_paging_ui)
+        self.view_model.post_list_updated_initialized.connect(self.reset_search_input)
 
         # Table Double click event 연결
         self.table.doubleClicked.connect(self.on_double_click)
@@ -249,3 +250,7 @@ class PostListPage(QWidget):
     def on_selection_changed(self, selected, deselected):
         has_selection = self.table.selectionModel().hasSelection()
         self.btn_delete.setEnabled(has_selection)
+
+    def reset_search_input(self):
+        self.input_search.clear()
+        self.input_search.clearFocus()
