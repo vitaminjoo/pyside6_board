@@ -8,11 +8,12 @@ app/utils/styles.py
 # --------------------------------------------------------------------------
 # 1. 색상 상수 정의 (Color Palette)
 # --------------------------------------------------------------------------
-COLOR_PRIMARY = "#3498db"          # 메인 파란색
-COLOR_PRIMARY_BORDER = "#2980b9"   # 메인 파란색 (진함/테두리)
-COLOR_DANGER = "#b5334b"           # 경고/삭제 빨간색
-COLOR_SELECTED = "#5f6369"         # 테이블 선택 행 배경색
-COLOR_TEXT_BASE = "#2f3640"        # 기본 글자색 (필요 시 사용)
+COLOR_PRIMARY = "#3498db"  # 메인 파란색
+COLOR_PRIMARY_BORDER = "#2980b9"  # 메인 파란색 (진함/테두리)
+COLOR_DANGER = "#b5334b"  # 경고/삭제 빨간색
+COLOR_SELECTED = "#5f6369"  # 테이블 선택 행 배경색
+COLOR_TEXT_BASE = "#2f3640"  # 기본 글자색 (필요 시 사용)
+COLOR_TRANSPARENT = "transparent"
 
 # --------------------------------------------------------------------------
 # 2. 공통 스타일 조각 - 중복 제거용
@@ -59,10 +60,12 @@ LIST_STYLE = _BASE_STYLE + _BTN_POST_STYLE + f"""
     QTableView {{
         outline: 0;
     }}
+    
     QTableView::item:focus {{
         border: none;
         outline: none;
     }}
+    
     QTableView::item:selected {{
         background-color: {COLOR_SELECTED};
         color: white;
@@ -77,7 +80,7 @@ LIST_STYLE = _BASE_STYLE + _BTN_POST_STYLE + f"""
     }}
     
     QPushButton#btn_delete:disabled {{ 
-        background-color: {COLOR_SELECTED};
+        background-color: {COLOR_TRANSPARENT};
         border: none;
     }}
 """
@@ -103,7 +106,7 @@ DETAIL_STYLE = _BASE_STYLE + _INPUT_BASE_STYLE + f"""
 
     QPushButton#btn_delete {{
         font-weight: bold;
-        background-color: {COLOR_SELECTED};
+        background-color: {COLOR_TRANSPARENT};
         padding: 2px;
         border-radius: 4px;
     }}

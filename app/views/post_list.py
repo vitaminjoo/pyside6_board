@@ -140,6 +140,7 @@ class PostListPage(QWidget):
         self.table.setModel(self.model)
 
         header = self.table.horizontalHeader()
+        header.setHighlightSections(False)
 
         header.setSectionResizeMode(0, QHeaderView.Interactive)
         header.setSectionResizeMode(1, QHeaderView.Stretch)
